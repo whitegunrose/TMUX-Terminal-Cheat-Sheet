@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/whitegunrose/TMUX-Terminal-Cheat-Sheet/internal/data"
@@ -12,14 +13,17 @@ import (
 // Model holds the entire application state.
 // In bubbletea, all state lives here — nothing is mutated outside of Update().
 type Model struct {
-	cursor int // which category is selected
-	width  int
-	height int
+	cursor   int // which category is selected
+	width    int
+	height   int
+	viewport viewport.Model
 }
 
 // New returns the initial model.
 func New() Model {
-	return Model{}
+	vp := viewport.New(0, 0)
+	vp.SetContent("")
+	return Model{viewport: vp}
 }
 
 // Init runs any startup commands. We don't need any, so return nil.
@@ -36,26 +40,39 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width = msg.Width
 		m.height = msg.Height
 
+		headerHeight := 3 // title + padding
+		footerHeight := 2 // help text + padding
+
+		m.viewport.Width = m.width - 6
+		m.viewport.Height = m.height - headerHeight - footerHeight
+
+		// re-render content whenever the pane is resized
+		m.viewport.SetContent(m.renderBindings())
+
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "q", "ctrl+c":
 			return m, tea.Quit
 
-		// case "up", "k":
 		case "left", "h":
 			if m.cursor > 0 {
 				m.cursor--
+				m.viewport.SetContent(m.renderBindings())
+				m.viewport.GotoTop() // reset scroll on category change
 			}
 
-		// case "down", "j":
 		case "right", "l":
 			if m.cursor < len(data.Sections)-1 {
 				m.cursor++
+				m.viewport.SetContent(m.renderBindings())
+				m.viewport.GotoTop()
 			}
 		}
 	}
 
-	return m, nil
+	var cmd tea.Cmd
+	m.viewport, cmd = m.viewport.Update(msg)
+	return m, cmd
 }
 
 // View renders the UI from the current model state.
@@ -67,14 +84,10 @@ func (m Model) View() string {
 
 	title := titleStyle.Render("󰀲  TMUX Cheat Sheet")
 
-	// left := m.renderCategories()
 	top := m.renderCategories()
-	// right := m.renderBindings()
-	bottom := m.renderBindings()
+	bottom := bottomPanelStyle.Render(m.viewport.View())
 
-	// panels := lipgloss.JoinHorizontal(lipgloss.Top, left, right)
 	panels := lipgloss.JoinVertical(lipgloss.Top, top, bottom)
-	// footer := helpStyle.Render("↑/↓ or j/k to navigate  •  q to quit")
 	footer := helpStyle.Render("← / → or h/l to navigate  •  q to quit")
 
 	return appStyle.Render(
@@ -89,16 +102,15 @@ func (m Model) renderCategories() string {
 	for i, section := range data.Sections {
 		label := section.Title
 		if i == m.cursor {
-			// b.WriteString(selectedCategoryStyle.Render("▶ "+label) + "\n")
 			b.WriteString(selectedCategoryStyle.Render("▶ "+label) + " ")
 		} else {
-			// b.WriteString(categoryStyle.Render("  "+label) + "\n")
 			b.WriteString(categoryStyle.Render("  "+label) + " ")
 		}
 	}
 
 	// return leftPanelStyle.Render(b.String())
-	return topPanelStyle.Render(b.String())
+	// return topPanelStyle.Render(b.String())
+	return topPanelStyle.Width(m.width - 6).Render(b.String()) // dynamic width
 }
 
 // renderBindings builds the right panel showing keybindings for the
@@ -106,15 +118,17 @@ func (m Model) renderCategories() string {
 func (m Model) renderBindings() string {
 	section := data.Sections[m.cursor]
 
+	keyWidth := m.viewport.Width / 2
+	descWidth := m.viewport.Width - 2 // total width minus spacing
+
 	var b strings.Builder
 	b.WriteString(sectionTitleStyle.Render(section.Title) + "\n\n")
 
 	for _, binding := range section.Bindings {
-		key := keyStyle.Render(binding.Key)
-		desc := descStyle.Render(binding.Desc)
-		b.WriteString(fmt.Sprintf("%s %s\n", key, desc))
+		key := keyStyle.Width(keyWidth).Render(binding.Key)
+		desc := descStyle.Width(descWidth).Render(binding.Desc) // dynamic width
+		b.WriteString(fmt.Sprintf("%s\n%s\n\n", key, desc))
 	}
 
-	// return rightPanelStyle.Render(b.String())
-	return bottomPanelStyle.Render(b.String())
+	return b.String()
 }
