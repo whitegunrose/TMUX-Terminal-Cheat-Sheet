@@ -41,12 +41,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q", "ctrl+c":
 			return m, tea.Quit
 
-		case "up", "k":
+		// case "up", "k":
+		case "left", "h":
 			if m.cursor > 0 {
 				m.cursor--
 			}
 
-		case "down", "j":
+		// case "down", "j":
+		case "right", "l":
 			if m.cursor < len(data.Sections)-1 {
 				m.cursor++
 			}
@@ -65,10 +67,13 @@ func (m Model) View() string {
 
 	title := titleStyle.Render("󰀲  TMUX Cheat Sheet")
 
-	left := m.renderCategories()
-	right := m.renderBindings()
+	// left := m.renderCategories()
+	top := m.renderCategories()
+	// right := m.renderBindings()
+	bottom := m.renderBindings()
 
-	panels := lipgloss.JoinHorizontal(lipgloss.Top, left, right)
+	// panels := lipgloss.JoinHorizontal(lipgloss.Top, left, right)
+	panels := lipgloss.JoinVertical(lipgloss.Top, top, bottom)
 	footer := helpStyle.Render("↑/↓ or j/k to navigate  •  q to quit")
 
 	return appStyle.Render(
@@ -83,13 +88,16 @@ func (m Model) renderCategories() string {
 	for i, section := range data.Sections {
 		label := section.Title
 		if i == m.cursor {
-			b.WriteString(selectedCategoryStyle.Render("▶ "+label) + "\n")
+			// b.WriteString(selectedCategoryStyle.Render("▶ "+label) + "\n")
+			b.WriteString(selectedCategoryStyle.Render("▶ "+label) + " ")
 		} else {
-			b.WriteString(categoryStyle.Render("  "+label) + "\n")
+			// b.WriteString(categoryStyle.Render("  "+label) + "\n")
+			b.WriteString(categoryStyle.Render("  "+label) + " ")
 		}
 	}
 
-	return leftPanelStyle.Render(b.String())
+	// return leftPanelStyle.Render(b.String())
+	return topPanelStyle.Render(b.String())
 }
 
 // renderBindings builds the right panel showing keybindings for the
@@ -106,5 +114,6 @@ func (m Model) renderBindings() string {
 		b.WriteString(fmt.Sprintf("%s %s\n", key, desc))
 	}
 
-	return rightPanelStyle.Render(b.String())
+	// return rightPanelStyle.Render(b.String())
+	return bottomPanelStyle.Render(b.String())
 }

@@ -3,30 +3,31 @@ package ui
 import "github.com/charmbracelet/lipgloss"
 
 const (
-	leftPanelWidth = 22
-	borderColor    = "#3C3C3C"
-	green          = "#25A065"
-	orange         = "#F99417"
-	blue           = "#5C7AEA"
-	subtle         = "#626262"
-	bright         = "#FFFDF5"
+	// leftPanelWidth = 22
+	borderColor = "#3C3C3C"
+	green       = "#25A065"
+	orange      = "#F99417"
+	blue        = "#5C7AEA"
+	subtle      = "#626262"
+	bright      = "#FFFDF5"
 )
 
 var (
 	// Overall app padding
 	appStyle = lipgloss.NewStyle().Padding(1, 2)
 
-	// Left panel: category list
-	leftPanelStyle = lipgloss.NewStyle().
-			Width(leftPanelWidth).
-			BorderStyle(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color(borderColor)).
-			BorderRight(true).
-			PaddingRight(1)
+	// Top panel: category list
+	topPanelStyle = lipgloss.NewStyle().
+		// Width(leftPanelWidth).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color(borderColor)).
+		BorderLeft(true).
+		BorderRight(true).
+		PaddingRight(1)
 
-	// Right panel: bindings
-	rightPanelStyle = lipgloss.NewStyle().
-			PaddingLeft(2)
+	// Bottom panel: bindings
+	bottomPanelStyle = lipgloss.NewStyle().
+				PaddingLeft(2)
 
 	// Title bar
 	titleStyle = lipgloss.NewStyle().
