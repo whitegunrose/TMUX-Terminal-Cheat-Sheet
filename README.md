@@ -43,7 +43,10 @@
 8. [Acknowledgments](#acknowledgments)
 
 ---
-![](https://github.com/whitegunrose/TMUX-Terminal-Cheat-Sheet/blob/main/assets/txcs_demo.gif)
+<div align="center">
+  <img src="https://github.com/whitegunrose/TMUX-Terminal-Cheat-Sheet/blob/main/assets/txcs_demo.gif" width="600" />
+</div>
+<!-- ![](https://github.com/whitegunrose/TMUX-Terminal-Cheat-Sheet/blob/main/assets/txcs_demo.gif) -->
 ---
 
 ## About The Project
