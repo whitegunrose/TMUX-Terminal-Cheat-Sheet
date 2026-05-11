@@ -54,14 +54,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "q", "ctrl+c":
 			return m, tea.Quit
 
-		case "left", "h":
+		// case "left", "h":
+		case "h":
 			if m.cursor > 0 {
 				m.cursor--
 				m.viewport.SetContent(m.renderBindings())
 				m.viewport.GotoTop() // reset scroll on category change
 			}
 
-		case "right", "l":
+		// case "right", "l":
+		case "l":
 			if m.cursor < len(data.Sections)-1 {
 				m.cursor++
 				m.viewport.SetContent(m.renderBindings())
@@ -88,7 +90,8 @@ func (m Model) View() string {
 	bottom := bottomPanelStyle.Render(m.viewport.View())
 
 	panels := lipgloss.JoinVertical(lipgloss.Top, top, bottom)
-	footer := helpStyle.Render("← / → or h/l to navigate  •  q to quit")
+	// footer := helpStyle.Render("← / → or h/l to navigate  •  q to quit")
+	footer := helpStyle.Render("h/j/k/l to navigate  •  q to quit")
 
 	return appStyle.Render(
 		lipgloss.JoinVertical(lipgloss.Left, title, panels, footer),
