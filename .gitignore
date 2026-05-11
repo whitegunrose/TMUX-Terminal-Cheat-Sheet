@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Go build output
+/tmux-cheat-sheet
+
+# Go test cache
+*.test
+*.out
