@@ -46,8 +46,10 @@
 <div align="center">
   <img src="https://github.com/whitegunrose/TMUX-Terminal-Cheat-Sheet/blob/main/assets/txcs_demo.gif" width="600" />
 </div>
-<!-- ![](https://github.com/whitegunrose/TMUX-Terminal-Cheat-Sheet/blob/main/assets/txcs_demo.gif) -->
+
 ---
+
+<!-- ![](https://github.com/whitegunrose/TMUX-Terminal-Cheat-Sheet/blob/main/assets/txcs_demo.gif) -->
 
 ## About The Project
 
