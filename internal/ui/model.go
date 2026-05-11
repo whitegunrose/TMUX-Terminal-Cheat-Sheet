@@ -74,7 +74,8 @@ func (m Model) View() string {
 
 	// panels := lipgloss.JoinHorizontal(lipgloss.Top, left, right)
 	panels := lipgloss.JoinVertical(lipgloss.Top, top, bottom)
-	footer := helpStyle.Render("↑/↓ or j/k to navigate  •  q to quit")
+	// footer := helpStyle.Render("↑/↓ or j/k to navigate  •  q to quit")
+	footer := helpStyle.Render("← / → or h/l to navigate  •  q to quit")
 
 	return appStyle.Render(
 		lipgloss.JoinVertical(lipgloss.Left, title, panels, footer),
